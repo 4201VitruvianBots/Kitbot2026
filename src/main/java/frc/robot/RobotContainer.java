@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.autos.MiddleToAirship;
 import frc.robot.commands.autos.TwoAlgaeRight;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -125,5 +126,6 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
     m_autoChooser.addOption("TwoAlgaeRight", new TwoAlgaeRight(m_swerveDrive));
+    m_autoChooser.addOption("MiddleToAirship", new MiddleToAirship(m_swerveDrive));
   }
 }
