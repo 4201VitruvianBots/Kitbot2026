@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetIntakeShooterSpeeds;
-import frc.robot.commands.autos.TwoAlgaeRight;
+import frc.robot.commands.autos.ExampleAuto;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
 import frc.robot.generated.TunerConstants;
@@ -125,6 +125,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    m_autoChooser.addOption("TwoAlgaeRight", new TwoAlgaeRight(m_swerveDrive));
+    m_autoChooser.addOption("Example", new ExampleAuto(m_swerveDrive));
   }
 }

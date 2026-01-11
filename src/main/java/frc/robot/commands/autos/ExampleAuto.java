@@ -14,14 +14,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoAlgaeRight extends SequentialCommandGroup {
-  /** Creates a new TwoAlgaeRight. */
-  public TwoAlgaeRight(CommandSwerveDrivetrain swerveDrive) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+public class ExampleAuto extends SequentialCommandGroup {
+  public ExampleAuto(CommandSwerveDrivetrain swerveDrive) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile("StartToPiece1");
 
