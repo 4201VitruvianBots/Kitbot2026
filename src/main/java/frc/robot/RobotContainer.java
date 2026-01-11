@@ -4,14 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.SetIntakeShooterSpeeds;
 import frc.robot.commands.autos.TwoAlgaeRight;
+import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
+import frc.robot.constants.USB;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeShooter;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -36,15 +36,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
+  private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
+  private IntakeShooter m_intakeShooter = new IntakeShooter();
+  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
-  private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 10.42; // kSp,m,waeedAt12Volts desired top speed
+      new CommandXboxController(USB.driver_xBoxController);
+      
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 10.42; // kSpedAt12Volts desired top speed
   
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -77,13 +76,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    
+    //intake
+    m_driverController.leftTrigger().whileTrue(
+      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.INTAKE));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //shoot
+    m_driverController.rightTrigger().whileTrue(
+      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.SHOOT));
+
   }
 
   /**

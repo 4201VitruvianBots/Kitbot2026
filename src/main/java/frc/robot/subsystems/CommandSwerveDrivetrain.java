@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
-import org.team4201.codex.subsystems.SwerveSubsystem;
-import org.team4201.codex.utils.TrajectoryUtils;
-import org.team4201.codex.utils.TrajectoryUtils.TrajectoryUtilsConfig;
+import frc.team4201.lib.subsystems.SwerveSubsystem;
+import frc.team4201.lib.utils.TrajectoryUtils;
+import frc.team4201.lib.utils.TrajectoryUtils.TrajectoryUtilsConfig;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
