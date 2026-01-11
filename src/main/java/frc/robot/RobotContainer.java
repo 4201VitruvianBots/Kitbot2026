@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetIntakeShooterSpeeds;
-import frc.robot.commands.autos.ExampleAuto;
+import frc.robot.commands.autos.EightPieceMiddle;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
 import frc.robot.generated.TunerConstants;
@@ -17,17 +17,16 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.time.temporal.TemporalAdjuster;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.utils.Telemetry;
+import frc.team4201.lib.simulation.FieldSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,12 +37,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
   private IntakeShooter m_intakeShooter = new IntakeShooter();
-  
+
+  private final Telemetry m_telemetry = new Telemetry();
+  private final FieldSim m_fieldSim = new FieldSim();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 10.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpedAt12Volts desired top speed
   
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -119,12 +121,15 @@ public class RobotContainer {
                       rotationRate); // Drive counterclockwise with negative X (left)
               return drive;
             }));
+
+    m_telemetry.registerFieldSim(m_fieldSim);
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
   }
 
   private void initAutoChooser() {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    m_autoChooser.addOption("Example", new ExampleAuto(m_swerveDrive));
+    m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter));
   }
 }
