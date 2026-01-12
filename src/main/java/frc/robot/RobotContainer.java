@@ -5,8 +5,8 @@
 package frc.robot;
 
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.SetIntakeShooterSpeeds;
 import frc.robot.commands.autos.ExampleAuto;
+import frc.robot.commands.intakeShoot.SetIntakeShooterSpeeds;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
 import frc.robot.generated.TunerConstants;

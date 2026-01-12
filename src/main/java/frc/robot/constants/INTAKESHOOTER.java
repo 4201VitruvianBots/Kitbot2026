@@ -10,8 +10,8 @@ public class INTAKESHOOTER {
     public static final double peakReverseOutput = -0.8;
 
     public enum INTAKE_SPEED_PERCENT {
-        INTAKE(0.05),
-        SHOOT(-0.05);
+        INTAKE(-0.5),
+        SHOOT(0.6);
 
         private final double percent;
 
