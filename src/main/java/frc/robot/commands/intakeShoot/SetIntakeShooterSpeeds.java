@@ -13,17 +13,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SetIntakeShooterSpeeds extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeShooter m_intakeShooter;
-  private final INTAKE_SPEED_PERCENT m_intakePercent;
   private final INTAKE_SPEED_PERCENT m_shootPercent;
+  private final INTAKE_SPEED_PERCENT m_kickerPercent;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
+   * @param shootPercent The motor output percentage of the intake and shooter
+   * @param kickerPercent The motor output percentage of the kicker
    */
-  public SetIntakeShooterSpeeds(IntakeShooter intake, INTAKE_SPEED_PERCENT intakeMotor, INTAKE_SPEED_PERCENT flywheelMotor) {
+  public SetIntakeShooterSpeeds(IntakeShooter intake, INTAKE_SPEED_PERCENT shootPercent, INTAKE_SPEED_PERCENT kickerPercent) {
     m_intakeShooter = intake;
-    m_intakePercent = intakeMotor;
-    m_shootPercent = flywheelMotor;
+    m_shootPercent = shootPercent;
+    m_kickerPercent = kickerPercent;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeShooter);
   }
@@ -35,7 +37,7 @@ public class SetIntakeShooterSpeeds extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeShooter.setMotorSpeeds(m_intakePercent.get(), m_shootPercent.get());
+    m_intakeShooter.setMotorSpeeds(m_shootPercent.get(), m_kickerPercent.get());
   }
 
   // Called once the command ends or is interrupted.

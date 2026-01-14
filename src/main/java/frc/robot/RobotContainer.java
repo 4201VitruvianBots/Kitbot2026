@@ -83,17 +83,17 @@ public class RobotContainer {
     
     //intake
     m_driverController.leftTrigger().whileTrue(
-      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.INTAKE));
+      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE));
 
     //shoot
     m_driverController.rightTrigger().whileTrue(
-      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.SHOOT));
+      new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE));
 
     //climb up
     m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.UP));
     
     //climb down
-    m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
+    m_driverController.povDown().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
   }
 
   /**

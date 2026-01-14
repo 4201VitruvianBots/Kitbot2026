@@ -16,8 +16,8 @@ import frc.robot.constants.INTAKESHOOTER;
 import frc.team4201.lib.utils.CtreUtils;
 
 public class IntakeShooter extends SubsystemBase {
-  private final TalonFX m_intakeMotor = new TalonFX(CAN.intakeMotor);
-  private final TalonFX m_flywheelMotor = new TalonFX(CAN.flywheelMotor);
+  private final TalonFX m_intakeFlywheelMotor = new TalonFX(CAN.intakeFlywheelMotor);
+  private final TalonFX m_kickerMotor = new TalonFX(CAN.kickerMotor);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeShooter() {
@@ -26,14 +26,14 @@ public class IntakeShooter extends SubsystemBase {
     config.MotorOutput.PeakReverseDutyCycle = INTAKESHOOTER.peakReverseOutput;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    CtreUtils.configureTalonFx(m_intakeMotor, config);
-    CtreUtils.configureTalonFx(m_flywheelMotor, config);
+    CtreUtils.configureTalonFx(m_intakeFlywheelMotor, config);
+    CtreUtils.configureTalonFx(m_kickerMotor, config);
    }
 
    // Motor speeds in percent
   public void setMotorSpeeds(double percent1, double percent2) {
-    m_intakeMotor.set(percent1);
-    m_flywheelMotor.set(percent2);
+    m_intakeFlywheelMotor.set(percent1);
+    m_kickerMotor.set(percent2);
   }
 
   /**

@@ -11,7 +11,9 @@ public class INTAKESHOOTER {
 
     public enum INTAKE_SPEED_PERCENT {
         INTAKE(-0.5),
-        SHOOT(0.8);
+        KICKER_INTAKE(-0.8),
+        SHOOT(-0.7),
+        KICKER_OUTAKE(0.9);
 
         private final double percent;
 
