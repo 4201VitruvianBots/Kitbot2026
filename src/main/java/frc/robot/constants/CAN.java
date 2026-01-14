@@ -21,4 +21,6 @@ public class CAN {
 
     public static final int intakeMotor = 30;
     public static final int flywheelMotor = 31;
+
+    public static final int climberMotor = 32;
 }

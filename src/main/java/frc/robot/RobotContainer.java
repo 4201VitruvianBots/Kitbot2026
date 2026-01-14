@@ -6,10 +6,13 @@ package frc.robot;
 
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.autos.ExampleAuto;
+import frc.robot.commands.climber.SetClimbSpeed;
 import frc.robot.commands.intakeShoot.SetIntakeShooterSpeeds;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
+import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
 
@@ -38,12 +41,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
   private IntakeShooter m_intakeShooter = new IntakeShooter();
+  private Climber m_climber = new Climber();
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 10.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
   
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -85,6 +89,11 @@ public class RobotContainer {
     m_driverController.rightTrigger().whileTrue(
       new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.SHOOT));
 
+    //climb up
+    m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.UP));
+    
+    //climb down
+    m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
   }
 
   /**
