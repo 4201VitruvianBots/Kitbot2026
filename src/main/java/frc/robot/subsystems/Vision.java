@@ -24,7 +24,7 @@ import frc.team4201.lib.simulation.FieldSim;
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
   private FieldSim m_fieldSim;
-
+  private Translation2d m_goal = new Translation2d();
   // TODO: Re-add this
 //   private LimelightSim visionSim;
   private Controls m_controls;
@@ -101,6 +101,26 @@ public class Vision extends SubsystemBase {
     }
     if (m_fieldSim != null) m_fieldSim.addPoses("LineToNearestAlgae", robotToTarget);
   }
+
+
+private void updateAngleToHub() {
+  if (m_swerveDriveTrain != null) {
+    if (DriverStation.isDisabled()) {
+      if (DriverStation.isAutonomous()) 
+        m_goal = Controls.isRedAlliance() ? FIELD.redAutoHub : FIELD.blueAutoHub;
+      else m_goal = Controls.isRedAlliance() ? FIELD.redHub : FIELD.blueHub;
+    }
+    if(DriverStation.isAutonomous()){
+      m_swerveDriveTrain.setAngleToSpeaker(
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+             .getTranslation()
+             .minus(m_goal)
+             .getAngle());
+    }
+  }
+}
 
   public Pose2d getNearestTargetPose() {
     return robotToTarget[1];

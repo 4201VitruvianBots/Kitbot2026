@@ -30,6 +30,13 @@ public class FIELD {
 
   public static final AprilTagFieldLayout aprilTagFieldLayout = wpilibAprilTagLayout;
 
+  public static final Translation2d redHub = new Translation2d(4.625594,4.034536);
+  public static final Translation2d blueHub = new Translation2d(11.915394, 4.034536);
+
+  public static final Translation2d redAutoHub = redHub;
+  public static final Translation2d blueAutoHub = blueHub;
+  //TODO: is origin really at bottom left corner?? AbsoluteFlip says "Rightmost point on BLUE ALLIANCE WALL"
+
   /** Field X-axis */
   public static final Distance LENGTH = Meters.of(aprilTagFieldLayout.getFieldLength());
 
@@ -45,28 +52,38 @@ public class FIELD {
 
   /** Enum describing all AprilTags on the field by ID and their Pose3d positions. */
   public enum APRIL_TAG {
-    RED_CORAL_STATION_LEFT(1),
-    RED_CORAL_STATION_RIGHT(2),
-    RED_PROCESSOR(3),
-    BLUE_BARGE_FAR(4),
-    RED_BARGE_NEAR(5),
-    RED_REEF_NEAR_LEFT(6),
-    RED_REEF_NEAR_CENTER(7),
-    RED_REEF_NEAR_RIGHT(8),
-    RED_REEF_FAR_RIGHT(9),
-    RED_REEF_FAR_CENTER(10),
-    RED_REEF_FAR_LEFT(11),
-    BLUE_CORAL_STATION_RIGHT(12),
-    BLUE_CORAL_STATION_LEFT(13),
-    BLUE_BARGE_NEAR(14),
-    RED_BARGE_FAR(15),
-    BLUE_PROCESSOR(16),
-    BLUE_REEF_NEAR_RIGHT(17),
-    BLUE_REEF_NEAR_CENTER(18),
-    BLUE_REEF_NEAR_LEFT(19),
-    BLUE_REEF_FAR_LEFT(20),
-    BLUE_REEF_FAR_CENTER(21),
-    BLUE_REEF_FAR_RIGHT(22);
+    RED_TRENCH_NEAR_RIGHT(1),
+    RED_HUB_NEAR_RIGHT(2),
+    RED_HUB_RIGHT_CLOSE(3),
+    RED_HUB_RIGHT_FAR(4),
+    RED_HUB_FAR_RIGHT(5),
+    RED_TRENCH_FAR_RIGHT(6),
+    RED_TRENCH_FAR_LEFT(7),
+    RED_HUB_FAR_LEFT(8),
+    RED_HUB_LEFT_AWAY(9),
+    RED_HUB_LEFT_CLOSE(10),
+    RED_HUB_NEAR_LEFT(11),
+    RED_TRENCH_NEAR_LEFT(12),
+    RED_OUTPOST_NEAR(13),
+    RED_OUTPOST_FAR(14),
+    RED_TOWER_NEAR(15),
+    RED_TOWER_FAR(16),
+    BLUE_TRENCH_FAR_LEFT(17),
+    BLUE_HUB_FAR_LEFT(18),
+    BLUE_HUB_LEFT_FAR(19),
+    BLUE_HUB_LEFT_NEAR(20),
+    BLUE_HUB_NEAR_LEFT(21),
+    BLUE_TRENCH_NEAR_LEFT(22),
+    BLUE_TRENCH_NEAR_RIGHT(23),
+    BLUE_HUB_NEAR_RIGHT(24),
+    BLUE_HUB_RIGHT_NEAR(25),
+    BLUE_HUB_RIGHT_FAR(26),
+    BLUE_HUB_FAR_RIGHT(27),
+    BLUE_TRENCH_FAR_RIGHT(28),
+    BLUE_OUTPOST_FAR(29),
+    BLUE_OUTPOST_NEAR(30),
+    BLUE_TOWER_FAR(31),
+    BLUE_TOWER_NEAR(32);
 
     private final int id;
     private Pose3d pose;
