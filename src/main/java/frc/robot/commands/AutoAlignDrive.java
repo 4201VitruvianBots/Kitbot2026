@@ -8,38 +8,45 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
+import frc.robot.constants.SWERVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Vision;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoAlign extends Command {
+public class AutoAlignDrive extends Command {
 private final CommandSwerveDrivetrain m_SwerveDrivetrain;
 private final Vision m_vision;
 
   Translation2d m_goal = new Translation2d();
 
-// private final PIDController m_PidController = 
-//   new PIDController(DRIVE.kTeleP_Theta, DRIVE.kTeleI_Theta, DRIVE.kTeleD_Theta);
-//TODO: ask Gavin if we're doing this this year
+public static final double kTeleP_Theta = 10.0;
+public static final double kTeleI_Theta = 0.0;
+public static final double kTeleD_Theta = 0.0;
+
+
+private final PIDController m_PidController = 
+new PIDController(kTeleP_Theta, kTeleI_Theta, kTeleD_Theta);
+
 private final DoubleSupplier m_throttleInput;
 private final DoubleSupplier m_turnInput; 
 
   /** Creates a new AutoAlign. */
-  public AutoAlign(
+  public AutoAlignDrive(
     CommandSwerveDrivetrain commandSwerveDrivetrain,
     Vision vision,
     DoubleSupplier throttleInput,
     DoubleSupplier turnInput) {
-      m_SwerveDrivetrain = commandSwerveDrivetrain;
-      m_vision = vision;
-      m_throttleInput = throttleInput;
-      m_turnInput = turnInput;
-      // m_PidController.setTolerance(Units.degreesToRadians(2));
-      // m_PidController.enableContinuousInput(-Math.PI, Math.PI);
-      //TODO: ask Gavin if we're doing this this year
+    m_SwerveDrivetrain = commandSwerveDrivetrain;
+    m_vision = vision;
+    m_throttleInput = throttleInput;
+    m_turnInput = turnInput;
+    m_PidController.setTolerance(Units.degreesToRadians(2));
+    m_PidController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(m_SwerveDrivetrain);
   }
 
@@ -59,16 +66,15 @@ private final DoubleSupplier m_turnInput;
       m_goal = FIELD.redHub;
     }
     var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
-    // var turnRate = 
-    //   m_PidController.calculate(
-    //     m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),
-    //     setPoint.getAngle().getRadians());
-    // m_SwerveDrivetrain.setChassisSpeedControl(
-    //     new ChassisSpeeds(
-    //       m_throttleInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-    //       m_turnInput.getAsDouble() * DRIVE.kMaxSpeedMetersPerSecond,
-    //       turnRate));
-    //TODO: ask Gavin if we're doing PID controller still
+    var turnRate = 
+      m_PidController.calculate(
+        m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),
+        setPoint.getAngle().getRadians()); 
+  m_SwerveDrivetrain.setChassisSpeedControl(
+        new ChassisSpeeds(
+          m_throttleInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
+          m_turnInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
+          turnRate));
   }
 
   // Called once the command ends or is interrupted.

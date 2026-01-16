@@ -152,6 +152,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Sw
         }
     }
 
+    private Pose2d m_futurePose = new Pose2d();
+
+      public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds) {
+    setChassisSpeedControl(chassisSpeeds, 0.02, 1.0);
+  }
+
+  public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds, double loopPeriod) {
+    setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
+  }
+
+    public void setChassisSpeedControl(
+      ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
+    m_futurePose =
+        new Pose2d(
+            chassisSpeeds.vxMetersPerSecond * loopPeriod,
+            chassisSpeeds.vyMetersPerSecond * loopPeriod,
+            Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * loopPeriod * driftRate));
+      }
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
