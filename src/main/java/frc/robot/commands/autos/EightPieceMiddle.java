@@ -19,7 +19,6 @@ import frc.robot.subsystems.IntakeShooter;
 public class EightPieceMiddle extends SequentialCommandGroup {
   public EightPieceMiddle(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter) {
     try {
-
       PathPlannerPath path = PathPlannerPath.fromPathFile("EightPieceMiddlePath1");
       var starting_pose = path.getStartingHolonomicPose().orElseThrow();
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
@@ -29,8 +28,7 @@ public class EightPieceMiddle extends SequentialCommandGroup {
       addCommands(
               new InstantCommand(()->swerveDrive.resetPose(starting_pose)),
               m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
-              new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.SHOOT),
-              new WaitCommand(10)
+              new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
       );
     } catch (Exception e) {
       DriverStation.reportError("Failed to load path for EightPieceMiddle", e.getStackTrace());

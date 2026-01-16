@@ -8,7 +8,8 @@ public class INTAKESHOOTER {
         INTAKE(-0.5),
         KICKER_INTAKE(-0.8),
         SHOOT(-0.7),
-        KICKER_OUTAKE(0.9);
+        KICKER_OUTAKE(0.9),
+        OFF(0.0);
 
         private final double percent;
 
