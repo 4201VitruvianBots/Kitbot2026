@@ -4,30 +4,26 @@
 
 package frc.robot.commands;
 
-import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
-import frc.robot.subsystems.IntakeShooter;
+import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
+import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class SetIntakeShooterSpeeds extends Command {
+public class SetClimbSpeed extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
-  private final IntakeShooter m_intakeShooter;
-  private final INTAKE_SPEED_PERCENT m_shootPercent;
-  private final INTAKE_SPEED_PERCENT m_kickerPercent;
+  private final Climber m_climber;
+  private final CLIMB_SPEED_PERCENT m_climbPercent;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
-   * @param shootPercent The motor output percentage of the intake and shooter
-   * @param kickerPercent The motor output percentage of the kicker
    */
-  public SetIntakeShooterSpeeds(IntakeShooter intake, INTAKE_SPEED_PERCENT shootPercent, INTAKE_SPEED_PERCENT kickerPercent) {
-    m_intakeShooter = intake;
-    m_shootPercent = shootPercent;
-    m_kickerPercent = kickerPercent;
+  public SetClimbSpeed(Climber climber, CLIMB_SPEED_PERCENT climbPercent) {
+    m_climber = climber;
+    m_climbPercent = climbPercent;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intakeShooter);
+    addRequirements(m_climber);
   }
 
   // Called when the command is initially scheduled.
@@ -37,13 +33,13 @@ public class SetIntakeShooterSpeeds extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeShooter.setMotorSpeeds(m_shootPercent.get(), m_kickerPercent.get());
+    m_climber.setMotorSpeed(m_climbPercent.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!DriverStation.isAutonomous()) m_intakeShooter.setMotorSpeeds(0, 0);
+    if (!DriverStation.isAutonomous()) m_climber.setMotorSpeed(0);
   }
 
   // Returns true when the command should end.

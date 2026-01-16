@@ -12,28 +12,27 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CAN;
-import frc.robot.constants.INTAKESHOOTER;
+import frc.robot.constants.CLIMBER;
 import frc.team4201.lib.utils.CtreUtils;
 
-public class IntakeShooter extends SubsystemBase {
-  private final TalonFX m_intakeFlywheelMotor = new TalonFX(CAN.intakeFlywheelMotor);
-  private final TalonFX m_kickerMotor = new TalonFX(CAN.kickerMotor);
+public class Climber extends SubsystemBase {
+  private final TalonFX m_climberMotor = new TalonFX(CAN.climberMotor);
 
-  /** Creates a new ExampleSubsystem. */
-  public IntakeShooter() {
+  /** Creates a new Climber */
+  public Climber() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.PeakForwardDutyCycle = INTAKESHOOTER.peakForwardOutput;
-    config.MotorOutput.PeakReverseDutyCycle = INTAKESHOOTER.peakReverseOutput;
+    config.MotorOutput.PeakForwardDutyCycle = CLIMBER.peakForwardOutput;
+    config.MotorOutput.PeakReverseDutyCycle = CLIMBER.peakReverseOutput;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    CtreUtils.configureTalonFx(m_intakeFlywheelMotor, config);
-    CtreUtils.configureTalonFx(m_kickerMotor, config);
+    CtreUtils.configureTalonFx(m_climberMotor, config);
    }
 
-   // Motor speeds in percent
-  public void setMotorSpeeds(double percent1, double percent2) {
-    m_intakeFlywheelMotor.set(percent1);
-    m_kickerMotor.set(percent2);
+   /**  
+    * Motor speeds in percent
+    */
+  public void setMotorSpeed(double percent) {
+    m_climberMotor.set(percent);
   }
 
   /**

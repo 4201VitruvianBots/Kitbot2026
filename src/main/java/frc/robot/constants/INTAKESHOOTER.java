@@ -1,17 +1,14 @@
 package frc.robot.constants;
 
 public class INTAKESHOOTER {
-    //TODO: change values if needed
-    public static final double kP = 1.00;
-    public static final double kI = 1.00;
-    public static final double kD = 1.00;
-    public static final double gearRatio = 1.0 / 1.0;
-    public static final double peakForwardOutput = 0.8;
-    public static final double peakReverseOutput = -0.8;
+    public static final double peakForwardOutput = 0.9;
+    public static final double peakReverseOutput = -0.9;
 
     public enum INTAKE_SPEED_PERCENT {
-        INTAKE(0.05),
-        SHOOT(-0.05);
+        INTAKE(-0.5),
+        KICKER_INTAKE(-0.8),
+        SHOOT(-0.7),
+        KICKER_OUTAKE(0.9);
 
         private final double percent;
 
