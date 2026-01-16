@@ -144,7 +144,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Sw
 
         try {
             m_trajectoryUtils =
-                new TrajectoryUtils(this, new TrajectoryUtilsConfig().withResetPoseOnAuto(false));
+                new TrajectoryUtils(this, new TrajectoryUtilsConfig().withResetPoseOnAuto(true));
         } catch (Exception ex) {
             DriverStation.reportError("Failed to configure TrajectoryUtils", ex.getStackTrace());
         }
