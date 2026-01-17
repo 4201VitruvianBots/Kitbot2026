@@ -82,27 +82,6 @@ public class Vision extends SubsystemBase {
     return !m_useLeftTarget;
   }
 
-  public void updateNearestScoringTarget() {
-    if (lockTarget) return;
-    robotToTarget[0] = m_swerveDriveTrain.getState().Pose;
-      if (Controls.isBlueAlliance()) {
-        if (m_useLeftTarget) {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.BLUE_CORAL_LEFT_BRANCHES);
-        } else {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.BLUE_CORAL_RIGHT_BRANCHES);
-        }
-      } else {
-        if (m_useLeftTarget) {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.RED_CORAL_LEFT_BRANCHES);
-        } else {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.RED_CORAL_RIGHT_BRANCHES);
-        }
-      robotToTarget[1] = FIELD.CORAL_TARGETS.getCoralPoseToTargetPose(nearestObjectPose);
-    }
-    if (m_fieldSim != null) m_fieldSim.addPoses("LineToNearestAlgae", robotToTarget);
-  }
-
-
 private void updateAngleToHub() {
   if (m_swerveDriveTrain != null) {
     if (DriverStation.isDisabled()) {
@@ -111,7 +90,7 @@ private void updateAngleToHub() {
       else m_goal = Controls.isRedAlliance() ? FIELD.redHub : FIELD.blueHub;
     }
     if(DriverStation.isAutonomous()){
-      m_swerveDriveTrain.setAngleToSpeaker(
+      m_swerveDriveTrain.setAngleToHub(
           m_swerveDriveTrain
               .getState()
               .Pose
@@ -121,10 +100,6 @@ private void updateAngleToHub() {
     }
   }
 }
-
-  public Pose2d getNearestTargetPose() {
-    return robotToTarget[1];
-  }
 
   public boolean getInitialLocalization() {
     return m_localized;
@@ -276,7 +251,7 @@ private void updateAngleToHub() {
     }
 
     if (m_swerveDriveTrain != null) {
-      updateNearestScoringTarget();
+      updateAngleToHub();
     }
   }
 

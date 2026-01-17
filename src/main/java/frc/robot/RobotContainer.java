@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoAlignDrive;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.autos.ExampleAuto;
 import frc.robot.commands.climber.SetClimbSpeed;
@@ -14,13 +15,16 @@ import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Vision;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.time.temporal.TemporalAdjuster;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -42,6 +46,9 @@ public class RobotContainer {
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
   private IntakeShooter m_intakeShooter = new IntakeShooter();
   private Climber m_climber = new Climber();
+  private Controls m_controls = new Controls();
+  private Vision m_vision = new Vision(m_controls);
+
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -94,6 +101,10 @@ public class RobotContainer {
     
     //climb down
     m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
+
+    //auto align
+    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+ 
   }
 
   /**

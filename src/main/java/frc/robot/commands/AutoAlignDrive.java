@@ -19,10 +19,9 @@ import frc.robot.subsystems.Vision;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAlignDrive extends Command {
-private final CommandSwerveDrivetrain m_SwerveDrivetrain;
+private final CommandSwerveDrivetrain m_swerveDrivetrain;
 private final Vision m_vision;
-
-  Translation2d m_goal = new Translation2d();
+Translation2d m_goal = new Translation2d();
 
 public static final double kTeleP_Theta = 10.0;
 public static final double kTeleI_Theta = 0.0;
@@ -41,13 +40,13 @@ private final DoubleSupplier m_turnInput;
     Vision vision,
     DoubleSupplier throttleInput,
     DoubleSupplier turnInput) {
-    m_SwerveDrivetrain = commandSwerveDrivetrain;
+    m_swerveDrivetrain = commandSwerveDrivetrain;
     m_vision = vision;
     m_throttleInput = throttleInput;
     m_turnInput = turnInput;
     m_PidController.setTolerance(Units.degreesToRadians(2));
     m_PidController.enableContinuousInput(-Math.PI, Math.PI);
-    addRequirements(m_SwerveDrivetrain);
+    addRequirements(m_swerveDrivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -65,12 +64,12 @@ private final DoubleSupplier m_turnInput;
     else {
       m_goal = FIELD.redHub;
     }
-    var setPoint = m_SwerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
+    var setPoint = m_swerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
     var turnRate = 
       m_PidController.calculate(
-        m_SwerveDrivetrain.getState().Pose.getRotation().getRadians(),
+        m_swerveDrivetrain.getState().Pose.getRotation().getRadians(),
         setPoint.getAngle().getRadians()); 
-  m_SwerveDrivetrain.setChassisSpeedControl(
+  m_swerveDrivetrain.setChassisSpeedControl(
         new ChassisSpeeds(
           m_throttleInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           m_turnInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,

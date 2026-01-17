@@ -25,7 +25,7 @@ public class FIELD {
    */
   public static final AprilTagFieldLayout wpilibAprilTagLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-
+  //TODO: change to k2026RebuiltWelded when that gets released if ever
   // public static final AprilTagFieldLayout practiceFieldAprilTagLayout;
 
   public static final AprilTagFieldLayout aprilTagFieldLayout = wpilibAprilTagLayout;
@@ -35,8 +35,7 @@ public class FIELD {
 
   public static final Translation2d redAutoHub = redHub;
   public static final Translation2d blueAutoHub = blueHub;
-  //TODO: is origin really at bottom left corner?? AbsoluteFlip says "Rightmost point on BLUE ALLIANCE WALL"
-
+  
   /** Field X-axis */
   public static final Distance LENGTH = Meters.of(aprilTagFieldLayout.getFieldLength());
 
