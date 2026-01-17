@@ -8,6 +8,7 @@ import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
 import frc.robot.commands.autos.EightPieceMiddle;
+import frc.robot.commands.autos.EightPieceRight;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
@@ -141,5 +142,6 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
     m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter));
+    m_autoChooser.addOption("EightPieceRight", new EightPieceRight(m_swerveDrive, m_intakeShooter));
   }
 }

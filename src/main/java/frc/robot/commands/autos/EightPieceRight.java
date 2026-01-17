@@ -14,19 +14,19 @@ import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
 
-public class EightPieceMiddle extends SequentialCommandGroup {
-  public EightPieceMiddle(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter) {
+public class EightPieceRight extends SequentialCommandGroup {
+  public EightPieceRight(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter) {
     try {
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-      var m_path1 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("EightPieceMiddlePath1");
+      var m_path1 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("EightPieceRightPath1");
 
       addCommands(
               m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
               new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
       );
     } catch (Exception e) {
-      DriverStation.reportError("Failed to load path for EightPieceMiddle", e.getStackTrace());
+      DriverStation.reportError("Failed to load path for EightPieceRight", e.getStackTrace());
       addCommands(new InstantCommand());
     }
   }
