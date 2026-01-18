@@ -9,9 +9,11 @@ import frc.robot.commands.autos.ExampleAuto;
 import frc.robot.commands.climber.SetClimbSpeed;
 import frc.robot.commands.intakeShoot.SetIntakeShooterSpeeds;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
+import frc.robot.constants.ROBOT;
+import frc.robot.constants.ROBOT.ROBOT_ID;
 import frc.robot.constants.USB;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.KitbotConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
@@ -39,7 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
+  private CommandSwerveDrivetrain m_swerveDrive;
   private IntakeShooter m_intakeShooter = new IntakeShooter();
   private Climber m_climber = new Climber();
   
@@ -47,7 +49,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed;
   
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -63,24 +65,16 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
+    if (ROBOT.robotID.equals(ROBOT_ID.ALPHABOT)) configureAlphaBotBindings();
+    else configureBindings();
+    
     intializeSubsystems();
     initAutoChooser();
     
     SmartDashboard.putData(new ResetGyro(m_swerveDrive));
   }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+  
   private void configureBindings() {
-    
     //intake
     m_driverController.leftTrigger().whileTrue(
       new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE));
@@ -95,6 +89,10 @@ public class RobotContainer {
     //climb down
     m_driverController.povDown().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
   }
+  
+  private void configureAlphaBotBindings() {
+    
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -106,6 +104,16 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
   private void intializeSubsystems(){
+    if (ROBOT.robotID.equals(ROBOT_ID.ALPHABOT)) {
+        // TODO: Add Alphabot Constants
+        // MaxSpeed = AlphabotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
+        // m_swerveDrive = AlphabotConstants.createDrivetrain();
+        MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
+        m_swerveDrive = KitbotConstants.createDrivetrain();
+    } else {
+        MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
+        m_swerveDrive = KitbotConstants.createDrivetrain();
+    }
     
     // Set Subsystem DefaultCommands
     m_swerveDrive.setDefaultCommand(
