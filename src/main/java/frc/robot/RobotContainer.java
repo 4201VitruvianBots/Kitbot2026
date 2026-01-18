@@ -18,6 +18,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.Vision;
+import frc.team4201.lib.simulation.FieldSim;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -28,28 +29,41 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.team4201.lib.utils.Telemetry;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
- */
+//  */
+// @Logged(name = "Robot Container", importance = Logged.Importance.CRITICAL)
 public class RobotContainer {
+//   @Logged(name = "Drivetrain", importance = Logged.Importance.INFO)
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
-  private IntakeShooter m_intakeShooter = new IntakeShooter();
-  private Climber m_climber = new Climber();
-  private Controls m_controls = new Controls();
-  private Vision m_vision = new Vision(m_controls);
 
+  // @Logged(name = "Intake/Shooter", importance = Logged.Importance.INFO)
+  private IntakeShooter m_intakeShooter = new IntakeShooter();
+
+  // @Logged(name = "Climber", importance = Logged.Importance.INFO)
+  private Climber m_climber = new Climber();
   
+  // @Logged(name = "Controls", importance = Logged.Importance.INFO)
+  private Controls m_controls = new Controls();
+
+  @Logged(name = "Vision", importance = Logged.Importance.INFO)
+  private Vision m_vision = new Vision(m_controls);
+  private final Telemetry m_telemetry = new Telemetry();
+  private final FieldSim m_fieldSim = new FieldSim();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
@@ -70,8 +84,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
     intializeSubsystems();
+    configureBindings();
     initAutoChooser();
     
     SmartDashboard.putData(new ResetGyro(m_swerveDrive));
@@ -104,6 +118,8 @@ public class RobotContainer {
 
     //auto align
     m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+//TODO: rebind to right bumper
+    // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  
   }
 
@@ -139,6 +155,13 @@ public class RobotContainer {
                       rotationRate); // Drive counterclockwise with negative X (left)
               return drive;
             }));
+            m_vision.registerSwerveDrive(m_swerveDrive);
+            m_vision.registerFieldSim(m_fieldSim);
+          
+            m_telemetry.registerFieldSim(m_fieldSim);
+            //TODO: shoot one of these duplicates
+
+            m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
   }
 
   private void initAutoChooser() {

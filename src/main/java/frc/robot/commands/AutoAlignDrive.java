@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,7 +16,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Vision;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAlignDrive extends Command {
 private final CommandSwerveDrivetrain m_swerveDrivetrain;
 private final Vision m_vision;
@@ -52,24 +50,24 @@ private final DoubleSupplier m_turnInput;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_PidController.reset();
+    m_PidController.reset();   
+  if(Controls.isBlueAlliance()){
+      m_goal = FIELD.blueHub;
+    } 
+  else {
+      m_goal = FIELD.redHub;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Controls.isBlueAlliance()){
-      m_goal = FIELD.blueHub;
-    } 
-    else {
-      m_goal = FIELD.redHub;
-    }
     var setPoint = m_swerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
     var turnRate = 
       m_PidController.calculate(
         m_swerveDrivetrain.getState().Pose.getRotation().getRadians(),
         setPoint.getAngle().getRadians()); 
-  m_swerveDrivetrain.setChassisSpeedControl(
+    m_swerveDrivetrain.setChassisSpeedControl(
         new ChassisSpeeds(
           m_throttleInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           m_turnInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
