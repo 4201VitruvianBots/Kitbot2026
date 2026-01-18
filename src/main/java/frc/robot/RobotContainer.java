@@ -143,7 +143,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter));
+    m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter, m_climber));
     m_autoChooser.addOption("EightPieceRight", new EightPieceRight(m_swerveDrive, m_intakeShooter));
     m_autoChooser.addOption("EightPieceLeft", new EightPieceLeft(m_swerveDrive, m_intakeShooter));
     m_autoChooser.addOption("DepotLeft", new DepotLeft(m_swerveDrive, m_intakeShooter));
