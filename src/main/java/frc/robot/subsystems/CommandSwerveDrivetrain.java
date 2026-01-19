@@ -15,6 +15,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.util.DriveFeedforwards;
@@ -22,6 +23,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -152,23 +154,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Sw
     }
 
     private Pose2d m_futurePose = new Pose2d();
+    private Twist2d m_twistFromPose = new Twist2d();
+    private ChassisSpeeds m_newChassisSpeeds = new ChassisSpeeds();
+    private final ApplyRobotSpeeds m_chassisSpeedRequest = new ApplyRobotSpeeds();
 
-      public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds) {
-    setChassisSpeedControl(chassisSpeeds, 0.02, 1.0);
-  }
+    public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds) {
+        setChassisSpeedControl(chassisSpeeds, 0.02, 1.0);
+    }
 
-  public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds, double loopPeriod) {
-    setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
-  }
+    public void setChassisSpeedControl(ChassisSpeeds chassisSpeeds, double loopPeriod) {
+        setChassisSpeedControl(chassisSpeeds, loopPeriod, 1.0);
+    }
 
     public void setChassisSpeedControl(
       ChassisSpeeds chassisSpeeds, double loopPeriod, double driftRate) {
-    m_futurePose =
+        m_futurePose =
         new Pose2d(
             chassisSpeeds.vxMetersPerSecond * loopPeriod,
             chassisSpeeds.vyMetersPerSecond * loopPeriod,
             Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * loopPeriod * driftRate));
-      }
+
+        m_twistFromPose = new Pose2d().log(m_futurePose);
+
+        m_newChassisSpeeds =
+        new ChassisSpeeds(
+            m_twistFromPose.dx / loopPeriod,
+            m_twistFromPose.dy / loopPeriod,
+            chassisSpeeds.omegaRadiansPerSecond);
+
+        setControl(m_chassisSpeedRequest.withSpeeds(m_newChassisSpeeds));
+    }
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.

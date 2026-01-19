@@ -116,7 +116,7 @@ public class RobotContainer {
     m_driverController.povUp().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
 
     //auto align
-    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, () -> m_driverController.getLeftY(), () -> m_driverController.getLeftX()));
     //TODO: rebind to right bumper
     // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  

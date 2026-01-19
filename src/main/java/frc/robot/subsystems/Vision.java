@@ -36,7 +36,6 @@ public class Vision extends SubsystemBase {
   private Pose2d nearestObjectPose = Pose2d.kZero;
   private final Pose2d[] robotToTarget = {Pose2d.kZero, Pose2d.kZero};
   private boolean lockTarget = false;
-  private final int[] reefAprilTags = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
   private boolean hasInitialPose = false;
   // NetworkTables publisher setup
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();

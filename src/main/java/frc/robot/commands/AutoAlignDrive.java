@@ -14,32 +14,27 @@ import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.Vision;
 
 public class AutoAlignDrive extends Command {
-private final CommandSwerveDrivetrain m_swerveDrivetrain;
-private final Vision m_vision;
-Translation2d m_goal = new Translation2d();
+  private final CommandSwerveDrivetrain m_swerveDrivetrain;
+  Translation2d m_goal = new Translation2d();
 
-public static final double kTeleP_Theta = 10.0;
-public static final double kTeleI_Theta = 0.0;
-public static final double kTeleD_Theta = 0.0;
+  public static final double kTeleP_Theta = 10.0;
+  public static final double kTeleI_Theta = 0.0;
+  public static final double kTeleD_Theta = 0.0;
 
 
-private final PIDController m_PidController = 
-new PIDController(kTeleP_Theta, kTeleI_Theta, kTeleD_Theta);
+  private final PIDController m_PidController = new PIDController(kTeleP_Theta, kTeleI_Theta, kTeleD_Theta);
 
-private final DoubleSupplier m_throttleInput;
-private final DoubleSupplier m_turnInput; 
+  private final DoubleSupplier m_throttleInput;
+  private final DoubleSupplier m_turnInput; 
 
   /** Creates a new AutoAlign. */
   public AutoAlignDrive(
     CommandSwerveDrivetrain commandSwerveDrivetrain,
-    Vision vision,
     DoubleSupplier throttleInput,
     DoubleSupplier turnInput) {
     m_swerveDrivetrain = commandSwerveDrivetrain;
-    m_vision = vision;
     m_throttleInput = throttleInput;
     m_turnInput = turnInput;
     m_PidController.setTolerance(Units.degreesToRadians(2));
@@ -52,16 +47,16 @@ private final DoubleSupplier m_turnInput;
   public void initialize() {
     m_PidController.reset();   
     if(Controls.isBlueAlliance()){
-      m_goal = FIELD.blueHub;
+      m_goal = FIELD.blueAutoHub;
     } else {
-      m_goal = FIELD.redHub;
+      m_goal = FIELD.redAutoHub;
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var setPoint = m_swerveDrivetrain.getState().Pose.getTranslation().minus(m_goal);
+    var setPoint = m_goal.minus(m_swerveDrivetrain.getState().Pose.getTranslation());
     var turnRate = 
       m_PidController.calculate(
         m_swerveDrivetrain.getState().Pose.getRotation().getRadians(),
@@ -71,6 +66,7 @@ private final DoubleSupplier m_turnInput;
           m_throttleInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           m_turnInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           turnRate));
+    System.out.println(turnRate);
   }
 
   // Called once the command ends or is interrupted.
