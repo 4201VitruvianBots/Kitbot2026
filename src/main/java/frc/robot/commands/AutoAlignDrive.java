@@ -51,10 +51,9 @@ private final DoubleSupplier m_turnInput;
   @Override
   public void initialize() {
     m_PidController.reset();   
-  if(Controls.isBlueAlliance()){
+    if(Controls.isBlueAlliance()){
       m_goal = FIELD.blueHub;
-    } 
-  else {
+    } else {
       m_goal = FIELD.redHub;
     }
   }

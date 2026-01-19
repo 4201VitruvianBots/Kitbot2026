@@ -82,12 +82,14 @@ public class Vision extends SubsystemBase {
     return !m_useLeftTarget;
   }
 
-private void updateAngleToHub() {
+  private void updateAngleToHub() {
   if (m_swerveDriveTrain != null) {
     if (DriverStation.isDisabled()) {
-      if (DriverStation.isAutonomous()) 
+      if (DriverStation.isAutonomous()) {
         m_goal = Controls.isRedAlliance() ? FIELD.redAutoHub : FIELD.blueAutoHub;
-      else m_goal = Controls.isRedAlliance() ? FIELD.redHub : FIELD.blueHub;
+      } else {
+        m_goal = Controls.isRedAlliance() ? FIELD.redHub : FIELD.blueHub;
+      }
     }
     if(DriverStation.isAutonomous()){
       m_swerveDriveTrain.setAngleToHub(
@@ -124,7 +126,6 @@ private void updateAngleToHub() {
       LimelightHelpers.SetIMUMode(limelightName, 1);
 
       // Only use Reef AprilTags for localization
-      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, reefAprilTags);
       // TODO: Update code values before using this
       //      LimelightHelpers.setCameraPose_RobotSpace(
       //          "limelight-f",
@@ -178,7 +179,7 @@ private void updateAngleToHub() {
       if (!limelightMeasurement.isMegaTag2) {
         // Filter out bad AprilTag vision estimates for MegaTag1
         // TODO: Check 1 tag from center?
-        if (limelightMeasurement.tagCount < 2) {
+        if (limelightMeasurement.tagCount < 1) {
           return false;
         }
 

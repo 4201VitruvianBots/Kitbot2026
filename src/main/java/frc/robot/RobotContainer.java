@@ -47,7 +47,6 @@ import frc.team4201.lib.utils.Telemetry;
 //  */
 // @Logged(name = "Robot Container", importance = Logged.Importance.CRITICAL)
 public class RobotContainer {
-//   @Logged(name = "Drivetrain", importance = Logged.Importance.INFO)
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
 
   // @Logged(name = "Intake/Shooter", importance = Logged.Importance.INFO)
@@ -118,7 +117,7 @@ public class RobotContainer {
 
     //auto align
     m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
-//TODO: rebind to right bumper
+    //TODO: rebind to right bumper
     // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  
   }
@@ -133,7 +132,6 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
   private void intializeSubsystems(){
-    
     // Set Subsystem DefaultCommands
     m_swerveDrive.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -157,11 +155,9 @@ public class RobotContainer {
             }));
             m_vision.registerSwerveDrive(m_swerveDrive);
             m_vision.registerFieldSim(m_fieldSim);
-          
-            m_telemetry.registerFieldSim(m_fieldSim);
-            //TODO: shoot one of these duplicates
-
-            m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
+    // TODO: Discover which one of these is correct 
+    m_telemetry.registerFieldSim(m_fieldSim);
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
   }
 
   private void initAutoChooser() {
