@@ -43,10 +43,7 @@ public class SetIntakeShooterSpeeds extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // Auto disable = end auto, stop running shooter
-    // Auto enable = we're running the next part of our auto, keep running
-    // Teleop = the button has been let go, stop running
-    if (!DriverStation.isAutonomous() || DriverStation.isDisabled()) m_intakeShooter.setMotorSpeeds(0, 0);
+    m_intakeShooter.setMotorSpeeds(0, 0);
   }
 
   // Returns true when the command should end.
