@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
@@ -47,9 +48,9 @@ public class AutoAlignDrive extends Command {
   public void initialize() {
     m_PidController.reset();   
     if(Controls.isBlueAlliance()){
-      m_goal = FIELD.blueAutoHub;
+      m_goal = FIELD.blueHub;
     } else {
-      m_goal = FIELD.redAutoHub;
+      m_goal = FIELD.redHub;
     }
   }
 
@@ -66,7 +67,6 @@ public class AutoAlignDrive extends Command {
           m_throttleInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           m_turnInput.getAsDouble() * SWERVE.kMaxSpeedMetersPerSecond,
           turnRate));
-    System.out.println(turnRate);
   }
 
   // Called once the command ends or is interrupted.
