@@ -8,9 +8,8 @@ import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
 import frc.robot.commands.autos.EightPieceMiddle;
-import frc.robot.commands.autos.EightPieceRight;
-import frc.robot.commands.autos.EightPieceLeft;
-import frc.robot.commands.autos.TrenchLeft;
+import frc.robot.commands.autos.EightPieceSide;
+import frc.robot.commands.autos.TrenchSide;
 import frc.robot.commands.autos.DepotLeft;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
@@ -55,10 +54,12 @@ public class RobotContainer {
       new CommandXboxController(USB.driver_xBoxController);
       
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
-  
+  private Boolean m_flipToRight = false;
+
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  private final SendableChooser<Boolean> m_autoSide = new SendableChooser<>();
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   
@@ -72,6 +73,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     intializeSubsystems();
+    initSideChooser();
     initAutoChooser();
     
     SmartDashboard.putData(new ResetGyro(m_swerveDrive));
@@ -145,9 +147,21 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
     m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter, m_climber));
-    m_autoChooser.addOption("EightPieceRight", new EightPieceRight(m_swerveDrive, m_intakeShooter, m_climber));
-    m_autoChooser.addOption("EightPieceLeft", new EightPieceLeft(m_swerveDrive, m_intakeShooter, m_climber));
+    m_autoChooser.addOption("EightPieceSide", new EightPieceSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
+    m_autoChooser.addOption("TrenchSide", new TrenchSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
     m_autoChooser.addOption("DepotLeft", new DepotLeft(m_swerveDrive, m_intakeShooter));
-    m_autoChooser.addOption("TrenchLeft", new TrenchLeft(m_swerveDrive, m_intakeShooter, m_climber));
+  }
+
+  private void initSideChooser() {
+    SmartDashboard.putData("Auto Side", m_autoSide);
+    m_autoSide.setDefaultOption("Left", false);
+
+    m_autoSide.addOption("Right", true);
+    m_autoSide.onChange((Boolean selected) -> {
+      m_flipToRight = selected;
+      for (int i = 0; i < 100; i++) {
+        System.out.println("I wanna die" + m_flipToRight.toString());
+      }
+    });
   }
 }

@@ -4,7 +4,10 @@
 
 package frc.robot.commands.autos;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -15,27 +18,31 @@ import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
+import frc.team4201.lib.command.Auto;
+import frc.team4201.lib.utils.TrajectoryUtils;
 
-public class TrenchLeft extends SequentialCommandGroup {
-  public TrenchLeft(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter, Climber climber) {
+public class TrenchSide extends Auto {
+  public TrenchSide(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter, Climber climber, BooleanSupplier flipToRight) {
     try {
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-      var m_path1 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("TrenchLeftPath1");
-      var m_path2 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("TrenchLeftPath2");
-      var m_path3 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("TrenchLeftPath3");
+      TrajectoryUtils trajectoryUtils = swerveDrive.getTrajectoryUtils();
+
+      var m_path1 = PathPlannerPath.fromPathFile("TrenchSidePath1");
+      var m_path2 = PathPlannerPath.fromPathFile("TrenchSidePath2");
+      var m_path3 = PathPlannerPath.fromPathFile("TrenchSidePath3");
 
       addCommands(
-          m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
+          getPathCommand(trajectoryUtils, m_path1, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
           new ParallelRaceGroup (
-            m_path2.andThen(() -> swerveDrive.setControl(stopRequest)),
+            getPathCommand(trajectoryUtils, m_path2, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
             new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE)
           ),
-          m_path3.andThen(() -> swerveDrive.setControl(stopRequest)),
+          getPathCommand(trajectoryUtils, m_path3, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
           new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE).withTimeout(10)
       );
     } catch (Exception e) {
-      DriverStation.reportError("Failed to load path for BumpLeft", e.getStackTrace());
+      DriverStation.reportError("Failed to load path for TrenchSide", e.getStackTrace());
       addCommands(new InstantCommand());
     }
   }

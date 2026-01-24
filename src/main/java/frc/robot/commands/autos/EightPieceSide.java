@@ -4,9 +4,14 @@
 
 package frc.robot.commands.autos;
 
+import java.nio.file.Path;
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,27 +22,31 @@ import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
+import frc.team4201.lib.command.Auto;
+import frc.team4201.lib.utils.TrajectoryUtils;
 
-public class EightPieceRight extends SequentialCommandGroup {
-  public EightPieceRight(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter, Climber climber) {
-    try {
+public class EightPieceSide extends Auto {
+  public EightPieceSide(CommandSwerveDrivetrain swerveDrive, IntakeShooter intakeShooter, Climber climber, BooleanSupplier flipToRight) {
+    try { 
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-      var m_path1 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("EightPieceRightPath1");
-      var m_path2 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("EightPieceRightPath2");
+      TrajectoryUtils trajectoryUtils = swerveDrive.getTrajectoryUtils();
 
+      var m_path1 = PathPlannerPath.fromPathFile("EightPieceSidePath1");
+      var m_path2 = PathPlannerPath.fromPathFile("EightPieceSidePath1");
+      
       addCommands(
-          m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
+          getPathCommand(trajectoryUtils, m_path1, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
           new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
               .withTimeout(9),
           new ParallelCommandGroup(
-            m_path2.andThen(() -> swerveDrive.setControl(stopRequest)),
+          getPathCommand(trajectoryUtils, m_path2, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
             new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(2.7)
           ),
           new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(2.7)
       );
     } catch (Exception e) {
-      DriverStation.reportError("Failed to load path for EightPieceRight", e.getStackTrace());
+      DriverStation.reportError("Failed to load path for EightPieceLeft", e.getStackTrace());
       addCommands(new InstantCommand());
     }
   }
