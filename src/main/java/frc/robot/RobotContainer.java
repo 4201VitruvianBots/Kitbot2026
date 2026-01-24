@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoAlignDrive;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
@@ -17,35 +18,51 @@ import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Vision;
+import frc.team4201.lib.simulation.FieldSim;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.time.temporal.TemporalAdjuster;
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.utils.Telemetry;
-import frc.team4201.lib.simulation.FieldSim;
-
+import frc.team4201.lib.utils.Telemetry;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
- */
+//  */
+// @Logged(name = "Robot Container", importance = Logged.Importance.CRITICAL)
 public class RobotContainer {
   private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
+
+  // @Logged(name = "Intake/Shooter", importance = Logged.Importance.INFO)
   private IntakeShooter m_intakeShooter = new IntakeShooter();
+
+  // @Logged(name = "Climber", importance = Logged.Importance.INFO)
   private Climber m_climber = new Climber();
   
+  // @Logged(name = "Controls", importance = Logged.Importance.INFO)
+  private Controls m_controls = new Controls();
 
+  @Logged(name = "Vision", importance = Logged.Importance.INFO)
+  private Vision m_vision = new Vision(m_controls);
   private final Telemetry m_telemetry = new Telemetry();
   private final FieldSim m_fieldSim = new FieldSim();
 
@@ -71,6 +88,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    intializeSubsystems();
     configureBindings();
     intializeSubsystems();
     initSideChooser();
@@ -103,6 +121,12 @@ public class RobotContainer {
     
     //climb down
     m_driverController.povDown().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
+
+    //auto align
+    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, () -> m_driverController.getLeftY(), () -> m_driverController.getLeftX()));
+    //TODO: rebind to right bumper
+    // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+ 
   }
 
   /**
@@ -115,7 +139,6 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
   private void intializeSubsystems(){
-    
     // Set Subsystem DefaultCommands
     m_swerveDrive.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -137,7 +160,9 @@ public class RobotContainer {
                       rotationRate); // Drive counterclockwise with negative X (left)
               return drive;
             }));
-
+    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerFieldSim(m_fieldSim);
+    // TODO: Discover which one of these is correct 
     m_telemetry.registerFieldSim(m_fieldSim);
     m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
   }

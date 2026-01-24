@@ -39,7 +39,8 @@ public class SWERVE {
           MODULE_POSITION.BACK_RIGHT,
           new Translation2d(-kWheelBase.div(2).in(Meters), -kTrackWidth.div(2).in(Meters)));
 
-  public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
+  // public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
+  public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(3); //TODO: change back to original value of 18 
   public static final double kMaxRotationRadiansPerSecond =
       Math.PI * 0.3; // temporary to reduce speed (original value 2.0) TODO: change back
 
