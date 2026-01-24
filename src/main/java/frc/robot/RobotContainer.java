@@ -159,9 +159,6 @@ public class RobotContainer {
     m_autoSide.addOption("Right", true);
     m_autoSide.onChange((Boolean selected) -> {
       m_flipToRight = selected;
-      for (int i = 0; i < 100; i++) {
-        System.out.println("I wanna die" + m_flipToRight.toString());
-      }
     });
   }
 }
