@@ -230,7 +230,7 @@ public class Vision extends SubsystemBase {
             .minus(robotToTarget[1].getRotation())
             .getMeasure();
     SmartDashboard.putNumber("Target Rotation Delta", rotationDelta.in(Degrees));
-
+  
     var isAligned = rotationDelta.abs(Degrees) < 0.5;
 
     var setPoint = m_goal.minus(m_swerveDriveTrain.getState().Pose.getTranslation());
