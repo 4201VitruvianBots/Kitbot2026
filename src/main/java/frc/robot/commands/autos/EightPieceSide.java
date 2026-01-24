@@ -4,17 +4,12 @@
 
 package frc.robot.commands.autos;
 
-import java.nio.file.Path;
 import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
@@ -36,14 +31,14 @@ public class EightPieceSide extends Auto {
       var m_path2 = PathPlannerPath.fromPathFile("EightPieceSidePath1");
       
       addCommands(
-          getPathCommand(trajectoryUtils, m_path1, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
-          new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
-              .withTimeout(9),
-          new ParallelCommandGroup(
-          getPathCommand(trajectoryUtils, m_path2, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
-            new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(2.7)
-          ),
-          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(2.7)
+        getPathCommand(trajectoryUtils, m_path1, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
+        new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
+          .withTimeout(9),
+        new ParallelCommandGroup(
+        getPathCommand(trajectoryUtils, m_path2, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(2.7)
+        ),
+        new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(2.7)
       );
     } catch (Exception e) {
       DriverStation.reportError("Failed to load path for EightPieceLeft", e.getStackTrace());

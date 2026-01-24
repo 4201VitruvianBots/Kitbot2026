@@ -5,7 +5,6 @@
 package frc.robot.commands.autos;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -24,12 +23,12 @@ public class DepotLeft extends SequentialCommandGroup {
       var m_path2 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("DepotLeftPath2");
       
       addCommands(
-              new ParallelCommandGroup(
-                m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
-                new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE)
-              ).withTimeout(3),
-              m_path2.andThen(() -> swerveDrive.setControl(stopRequest)),
-              new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
+        new ParallelCommandGroup(
+          m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE)
+        ).withTimeout(3),
+        m_path2.andThen(() -> swerveDrive.setControl(stopRequest)),
+        new SetIntakeShooterSpeeds(intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE)
       );
     } catch (Exception e) {
       DriverStation.reportError("Failed to load path for DepotLeftPath", e.getStackTrace());
