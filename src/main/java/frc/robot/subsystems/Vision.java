@@ -30,7 +30,7 @@ public class Vision extends SubsystemBase {
   private Controls m_controls;
 
   private boolean m_localized;
-
+  private boolean m_aligned = false;
   private boolean m_useLeftTarget;
 
   private Pose2d nearestObjectPose = Pose2d.kZero;
@@ -222,17 +222,18 @@ public class Vision extends SubsystemBase {
 
   @Logged(name = "On Target", importance = Logged.Importance.CRITICAL)
   public boolean isOnTarget() {
-    var translationDelta =
+    var rotationDelta =
         m_swerveDriveTrain
             .getState()
             .Pose
-            .getTranslation()
-            .minus(robotToTarget[1].getTranslation())
-            .getNorm();
-    // TODO: Add Rotation delta
-    SmartDashboard.putNumber("Target Translation Delta", translationDelta);
+            .getRotation()
+            .minus(robotToTarget[1].getRotation())
+            .getMeasure();
+    SmartDashboard.putNumber("Target Rotation Delta", rotationDelta.in(Degrees));
 
-    return translationDelta < Inches.of(2).in(Meters);
+    var isAligned = rotationDelta.lt(Degrees.of(.05));
+    SmartDashboard.putBoolean("Aligned to Hub?", isAligned); 
+    return isAligned;
   }
 
   @Override
