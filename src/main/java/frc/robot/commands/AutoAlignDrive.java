@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.FIELD;
 import frc.robot.constants.SWERVE;
@@ -23,7 +22,6 @@ public class AutoAlignDrive extends Command {
   public static final double kTeleP_Theta = 10.0;
   public static final double kTeleI_Theta = 0.0;
   public static final double kTeleD_Theta = 0.0;
-
 
   private final PIDController m_PidController = new PIDController(kTeleP_Theta, kTeleI_Theta, kTeleD_Theta);
 

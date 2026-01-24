@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.commands.AutoAlignDrive;
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.autos.ExampleAuto;
 import frc.robot.commands.climber.SetClimbSpeed;
 import frc.robot.commands.intakeShoot.SetIntakeShooterSpeeds;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
@@ -163,7 +162,5 @@ public class RobotContainer {
   private void initAutoChooser() {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
-
-    m_autoChooser.addOption("Example", new ExampleAuto(m_swerveDrive));
   }
 }

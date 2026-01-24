@@ -222,23 +222,11 @@ public class Vision extends SubsystemBase {
 
   @Logged(name = "On Target", importance = Logged.Importance.CRITICAL)
   public boolean isOnTarget() {
-    var rotationDelta =
-        m_swerveDriveTrain
-            .getState()
-            .Pose
-            .getRotation()
-            .minus(robotToTarget[1].getRotation())
-            .getMeasure();
-    SmartDashboard.putNumber("Target Rotation Delta", rotationDelta.in(Degrees));
-  
-    var isAligned = rotationDelta.abs(Degrees) < 0.5;
-
-    var setPoint = m_goal.minus(m_swerveDriveTrain.getState().Pose.getTranslation());
-    SmartDashboard.putBoolean("Aligned to Hub?", isAligned); 
-    System.out.println("The angle to the hub is " + setPoint.getAngle());
-    System.out.println("The robot's angle is " + m_swerveDriveTrain.getState().Pose.getRotation());
-    System.out.println("Therefore, the alignment is" + isAligned);
-    return isAligned;
+    var currentRotation = m_swerveDriveTrain.getState().Pose.getRotation();
+    var desiredRotation = m_goal.minus(m_swerveDriveTrain.getState().Pose.getTranslation()).getAngle();
+    var diff = Math.abs(desiredRotation.minus(currentRotation).getDegrees());
+    // System.out.println("Current angle: " + currentRotation.getDegrees() + ", Desired angle: " + desiredRotation.getDegrees() + ", Difference: " + diff);
+    return diff < 0.5;
   }
 
   @Override
@@ -259,8 +247,6 @@ public class Vision extends SubsystemBase {
     if (m_swerveDriveTrain != null) {
       updateAngleToHub();
     }
-
-    isOnTarget();
   }
 
   @Override
