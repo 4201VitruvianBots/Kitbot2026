@@ -231,8 +231,13 @@ public class Vision extends SubsystemBase {
             .getMeasure();
     SmartDashboard.putNumber("Target Rotation Delta", rotationDelta.in(Degrees));
 
-    var isAligned = rotationDelta.lt(Degrees.of(.05));
+    var isAligned = rotationDelta.abs(Degrees) < 0.5;
+
+    var setPoint = m_goal.minus(m_swerveDriveTrain.getState().Pose.getTranslation());
     SmartDashboard.putBoolean("Aligned to Hub?", isAligned); 
+    System.out.println("The angle to the hub is " + setPoint.getAngle());
+    System.out.println("The robot's angle is " + m_swerveDriveTrain.getState().Pose.getRotation());
+    System.out.println("Therefore, the alignment is" + isAligned);
     return isAligned;
   }
 
@@ -254,6 +259,8 @@ public class Vision extends SubsystemBase {
     if (m_swerveDriveTrain != null) {
       updateAngleToHub();
     }
+
+    isOnTarget();
   }
 
   @Override
