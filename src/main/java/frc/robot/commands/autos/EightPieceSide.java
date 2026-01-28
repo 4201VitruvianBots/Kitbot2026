@@ -28,7 +28,7 @@ public class EightPieceSide extends Auto {
       TrajectoryUtils trajectoryUtils = swerveDrive.getTrajectoryUtils();
 
       var m_path1 = PathPlannerPath.fromPathFile("EightPieceSidePath1");
-      var m_path2 = PathPlannerPath.fromPathFile("EightPieceSidePath1");
+      var m_path2 = PathPlannerPath.fromPathFile("EightPieceSidePath2");
       
       addCommands(
         getPathCommand(trajectoryUtils, m_path1, flipToRight).andThen(() -> swerveDrive.setControl(stopRequest)),
