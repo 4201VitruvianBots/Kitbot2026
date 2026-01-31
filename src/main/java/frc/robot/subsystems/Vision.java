@@ -24,19 +24,18 @@ import frc.team4201.lib.simulation.FieldSim;
 public class Vision extends SubsystemBase {
   private CommandSwerveDrivetrain m_swerveDriveTrain;
   private FieldSim m_fieldSim;
-
+  private Translation2d m_goal = new Translation2d();
   // TODO: Re-add this
 //   private LimelightSim visionSim;
   private Controls m_controls;
 
   private boolean m_localized;
-
+  private boolean m_aligned = false;
   private boolean m_useLeftTarget;
 
   private Pose2d nearestObjectPose = Pose2d.kZero;
   private final Pose2d[] robotToTarget = {Pose2d.kZero, Pose2d.kZero};
   private boolean lockTarget = false;
-  private final int[] reefAprilTags = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
   private boolean hasInitialPose = false;
   // NetworkTables publisher setup
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -82,29 +81,26 @@ public class Vision extends SubsystemBase {
     return !m_useLeftTarget;
   }
 
-  public void updateNearestScoringTarget() {
-    if (lockTarget) return;
-    robotToTarget[0] = m_swerveDriveTrain.getState().Pose;
-      if (Controls.isBlueAlliance()) {
-        if (m_useLeftTarget) {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.BLUE_CORAL_LEFT_BRANCHES);
-        } else {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.BLUE_CORAL_RIGHT_BRANCHES);
-        }
+  private void updateAngleToHub() {
+  if (m_swerveDriveTrain != null) {
+    if (DriverStation.isDisabled()) {
+      if (DriverStation.isAutonomous()) {
+        m_goal = Controls.isRedAlliance() ? FIELD.redAutoHub : FIELD.blueAutoHub;
       } else {
-        if (m_useLeftTarget) {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.RED_CORAL_LEFT_BRANCHES);
-        } else {
-          nearestObjectPose = robotToTarget[0].nearest(FIELD.RED_CORAL_RIGHT_BRANCHES);
-        }
-      robotToTarget[1] = FIELD.CORAL_TARGETS.getCoralPoseToTargetPose(nearestObjectPose);
+        m_goal = Controls.isRedAlliance() ? FIELD.redHub : FIELD.blueHub;
+      }
     }
-    if (m_fieldSim != null) m_fieldSim.addPoses("LineToNearestAlgae", robotToTarget);
+    if(DriverStation.isAutonomous()){
+      m_swerveDriveTrain.setAngleToHub(
+          m_swerveDriveTrain
+              .getState()
+              .Pose
+             .getTranslation()
+             .minus(m_goal)
+             .getAngle());
+    }
   }
-
-  public Pose2d getNearestTargetPose() {
-    return robotToTarget[1];
-  }
+}
 
   public boolean getInitialLocalization() {
     return m_localized;
@@ -129,7 +125,6 @@ public class Vision extends SubsystemBase {
       LimelightHelpers.SetIMUMode(limelightName, 1);
 
       // Only use Reef AprilTags for localization
-      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, reefAprilTags);
       // TODO: Update code values before using this
       //      LimelightHelpers.setCameraPose_RobotSpace(
       //          "limelight-f",
@@ -183,7 +178,7 @@ public class Vision extends SubsystemBase {
       if (!limelightMeasurement.isMegaTag2) {
         // Filter out bad AprilTag vision estimates for MegaTag1
         // TODO: Check 1 tag from center?
-        if (limelightMeasurement.tagCount < 2) {
+        if (limelightMeasurement.tagCount < 1) {
           return false;
         }
 
@@ -227,17 +222,11 @@ public class Vision extends SubsystemBase {
 
   @Logged(name = "On Target", importance = Logged.Importance.CRITICAL)
   public boolean isOnTarget() {
-    var translationDelta =
-        m_swerveDriveTrain
-            .getState()
-            .Pose
-            .getTranslation()
-            .minus(robotToTarget[1].getTranslation())
-            .getNorm();
-    // TODO: Add Rotation delta
-    SmartDashboard.putNumber("Target Translation Delta", translationDelta);
-
-    return translationDelta < Inches.of(2).in(Meters);
+    var currentRotation = m_swerveDriveTrain.getState().Pose.getRotation();
+    var desiredRotation = m_goal.minus(m_swerveDriveTrain.getState().Pose.getTranslation()).getAngle();
+    var diff = Math.abs(desiredRotation.minus(currentRotation).getDegrees());
+    // System.out.println("Current angle: " + currentRotation.getDegrees() + ", Desired angle: " + desiredRotation.getDegrees() + ", Difference: " + diff);
+    return diff < 0.5;
   }
 
   @Override
@@ -256,7 +245,7 @@ public class Vision extends SubsystemBase {
     }
 
     if (m_swerveDriveTrain != null) {
-      updateNearestScoringTarget();
+      updateAngleToHub();
     }
   }
 

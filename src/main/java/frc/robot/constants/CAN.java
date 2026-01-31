@@ -1,8 +1,6 @@
 package frc.robot.constants;
 
 public class CAN {
-    //TODO: figure out the CAN IDs
-    public static final int CANdle = 8; // LED
     public static final int pigeon = 9;
 
     public static final int frontLeftCanCoder = 10;

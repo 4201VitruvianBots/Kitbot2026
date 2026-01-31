@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoAlignDrive;
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.autos.ExampleAuto;
-import frc.robot.commands.climber.SetClimbSpeed;
-import frc.robot.commands.intakeShoot.SetIntakeShooterSpeeds;
+import frc.robot.commands.SetClimbSpeed;
+import frc.robot.commands.SetIntakeShooterSpeeds;
+import frc.robot.commands.autos.EightPieceMiddle;
+import frc.robot.commands.autos.EightPieceSide;
+import frc.robot.commands.autos.TrenchSide;
+import frc.robot.commands.autos.DepotLeft;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.ROBOT;
 import frc.robot.constants.ROBOT.ROBOT_ID;
@@ -16,44 +20,65 @@ import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.generated.KitbotConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.IntakeShooter;
+import frc.robot.subsystems.Vision;
+import frc.team4201.lib.simulation.FieldSim;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.time.temporal.TemporalAdjuster;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.team4201.lib.utils.Telemetry;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
- */
+//  */
+// @Logged(name = "Robot Container", importance = Logged.Importance.CRITICAL)
 public class RobotContainer {
-  private CommandSwerveDrivetrain m_swerveDrive;
+  private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
+
+  // @Logged(name = "Intake/Shooter", importance = Logged.Importance.INFO)
   private IntakeShooter m_intakeShooter = new IntakeShooter();
+
+  // @Logged(name = "Climber", importance = Logged.Importance.INFO)
   private Climber m_climber = new Climber();
   
+  // @Logged(name = "Controls", importance = Logged.Importance.INFO)
+  private Controls m_controls = new Controls();
+
+  @Logged(name = "Vision", importance = Logged.Importance.INFO)
+  private Vision m_vision = new Vision(m_controls);
+  private final Telemetry m_telemetry = new Telemetry();
+  private final FieldSim m_fieldSim = new FieldSim();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed;
-  
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
+  private Boolean m_flipToRight = false;
+
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  private final SendableChooser<Boolean> m_autoSide = new SendableChooser<>();
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   
@@ -65,10 +90,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    if (ROBOT.robotID.equals(ROBOT_ID.ALPHABOT)) configureAlphaBotBindings();
-    else configureBindings();
-    
     intializeSubsystems();
+    configureBindings();
+    intializeSubsystems();
+    initSideChooser();
     initAutoChooser();
     
     SmartDashboard.putData(new ResetGyro(m_swerveDrive));
@@ -88,6 +113,12 @@ public class RobotContainer {
     
     //climb down
     m_driverController.povDown().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
+
+    //auto align
+    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, () -> m_driverController.getLeftY(), () -> m_driverController.getLeftX()));
+    //TODO: rebind to right bumper
+    // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+ 
   }
   
   private void configureAlphaBotBindings() {
@@ -104,17 +135,6 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
   private void intializeSubsystems(){
-    if (ROBOT.robotID.equals(ROBOT_ID.ALPHABOT)) {
-        // TODO: Add Alphabot Constants
-        // MaxSpeed = AlphabotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
-        // m_swerveDrive = AlphabotConstants.createDrivetrain();
-        MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
-        m_swerveDrive = KitbotConstants.createDrivetrain();
-    } else {
-        MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpeedAt12Volts desired top speed
-        m_swerveDrive = KitbotConstants.createDrivetrain();
-    }
-    
     // Set Subsystem DefaultCommands
     m_swerveDrive.setDefaultCommand(
         // Drivetrain will execute this command periodically
@@ -136,12 +156,30 @@ public class RobotContainer {
                       rotationRate); // Drive counterclockwise with negative X (left)
               return drive;
             }));
+    m_vision.registerSwerveDrive(m_swerveDrive);
+    m_vision.registerFieldSim(m_fieldSim);
+    // TODO: Discover which one of these is correct 
+    m_telemetry.registerFieldSim(m_fieldSim);
+    m_swerveDrive.registerTelemetry(m_telemetry::telemeterize);
   }
 
   private void initAutoChooser() {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    m_autoChooser.addOption("Example", new ExampleAuto(m_swerveDrive));
+    m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter, m_climber));
+    m_autoChooser.addOption("EightPieceSide", new EightPieceSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
+    m_autoChooser.addOption("TrenchSide", new TrenchSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
+    m_autoChooser.addOption("DepotLeft", new DepotLeft(m_swerveDrive, m_intakeShooter));
+  }
+
+  private void initSideChooser() {
+    SmartDashboard.putData("Auto Side", m_autoSide);
+    m_autoSide.setDefaultOption("Left", false);
+
+    m_autoSide.addOption("Right", true);
+    m_autoSide.onChange((Boolean selected) -> {
+      m_flipToRight = selected;
+    });
   }
 }

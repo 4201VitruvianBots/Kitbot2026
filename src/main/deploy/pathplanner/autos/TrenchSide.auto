@@ -1,5 +1,5 @@
 {
-  "version": "2026.0",
+  "version": "2025.0",
   "command": {
     "type": "sequential",
     "data": {
@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartToPiece1"
+            "pathName": "TrenchSidePath1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Piece1ToBarge"
+            "pathName": "TrenchSidePath2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BargeToPiece2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Piece2ToBarge"
+            "pathName": "TrenchSidePath3"
           }
         }
       ]
