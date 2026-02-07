@@ -38,6 +38,9 @@ public class PreloadNeutralShootClimb extends Auto {
       var m_path2 = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb2");
       var m_path3 = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb3");
       var m_path4 = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb4");
+      var m_path5Depot = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb5Depot");
+      var m_path5Outpost = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb5Outpost");
+      var m_path6 = PathPlannerPath.fromPathFile("PreloadNeutralShootClimb6");
 
       addCommands(
           getPathCommand(trajectoryUtils, m_path1, flipPath)
@@ -51,7 +54,11 @@ public class PreloadNeutralShootClimb extends Auto {
                   .andThen(() -> swerveDrive.setControl(stopRequest))),
           getPathCommand(trajectoryUtils, m_path4, flipPath)
               .andThen(() -> swerveDrive.setControl(stopRequest)),
-          new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.SHOOT, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_OUTAKE).withTimeout(3)
+          new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.SHOOT, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_OUTAKE).withTimeout(3),
+          getChoiceCommand(trajectoryUtils, m_path5Outpost, m_path5Depot, flipPath).andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(3),
+          getPathCommand(trajectoryUtils, m_path6, flipPath).andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(3)
       );
     } catch (Exception e) {
       DriverStation.reportError(

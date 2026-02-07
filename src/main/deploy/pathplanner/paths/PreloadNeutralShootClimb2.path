@@ -20,12 +20,12 @@
         "y": 7.299388888888888
       },
       "prevControl": {
-        "x": 1.25,
-        "y": 7.299388888888888
+        "x": 2.4026154875581462,
+        "y": 7.316493485039701
       },
       "nextControl": {
-        "x": 5.25,
-        "y": 7.299388888888888
+        "x": 5.181011111111111,
+        "y": 7.260411111111112
       },
       "isLocked": false,
       "linkedName": null
@@ -46,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 1.0107883817427272,
       "rotationDegrees": 0.0
     },
     {
@@ -67,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "PreloadNeutralShootClimb",

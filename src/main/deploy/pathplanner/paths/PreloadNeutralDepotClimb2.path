@@ -36,8 +36,8 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 5.75,
-        "y": 7.0
+        "x": 5.863122222222222,
+        "y": 7.357855555555556
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,11 +46,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.821576763485477,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 1.4788381742738346,
       "rotationDegrees": 0.0
     }
   ],
@@ -67,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "PreloadNeutralDepotClimb",

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1826762342710015,
-        "y": 5.252444315316471
+        "x": 0.42572222222222234,
+        "y": 5.019188888888889
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6,
+        "x": 0.5,
         "y": 4.5
       },
       "prevControl": {
-        "x": 0.6,
-        "y": 5.2
+        "x": 0.45495555555555567,
+        "y": 5.321266666666666
       },
       "nextControl": {
-        "x": 0.6,
-        "y": 4.25
+        "x": 0.513691303401018,
+        "y": 4.2503751851053675
       },
       "isLocked": false,
       "linkedName": null
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.7,
-      "rotationDegrees": 180.0
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "PreloadNeutralShootClimb",
