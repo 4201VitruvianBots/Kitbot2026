@@ -90,7 +90,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     intializeSubsystems();
     configureBindings();
-    intializeSubsystems();
     initSideChooser();
     initAutoChooser();
     

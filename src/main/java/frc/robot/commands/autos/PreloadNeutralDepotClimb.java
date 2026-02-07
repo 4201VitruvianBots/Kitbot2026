@@ -28,10 +28,6 @@ public class PreloadNeutralDepotClimb extends Auto {
       var m_path1 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb1");
       var m_path2 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb2");
       var m_path3 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb3");
-      var m_path4 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb4");
-      var m_path5 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb5");
-      var m_path6 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb6");
-      var m_path7 = swerveDrive.getTrajectoryUtils().generatePPHolonomicCommand("PreloadNeutralDepotClimb7");
 
       addCommands(
           m_path1.andThen(() -> swerveDrive.setControl(stopRequest)),
@@ -39,18 +35,7 @@ public class PreloadNeutralDepotClimb extends Auto {
           m_path2.andThen(() -> swerveDrive.setControl(stopRequest)),
           new ParallelRaceGroup(
               new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.INTAKE, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_INTAKE),
-              m_path3.andThen(() -> swerveDrive.setControl(stopRequest))),
-          m_path4.andThen(() -> swerveDrive.setControl(stopRequest)),
-          new ParallelCommandGroup(
-              new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.SHOOT, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_OUTAKE).withTimeout(3),
-              m_path5.andThen(() -> swerveDrive.setControl(stopRequest))),
-          new ParallelRaceGroup(
-              new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.INTAKE, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_INTAKE),
-              m_path6.andThen(() -> swerveDrive.setControl(stopRequest))),
-          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(3),
-          m_path7.andThen(() -> swerveDrive.setControl(stopRequest)),
-          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(3)
-          // Todo: add climb (command not yet implemented in this branch)
+              m_path3.andThen(() -> swerveDrive.setControl(stopRequest)))
           );
     } catch (Exception e) {
       DriverStation.reportError(
