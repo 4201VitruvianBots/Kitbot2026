@@ -9,13 +9,16 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
+import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.constants.INTAKESHOOTER;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.Vision;
 import frc.team4201.lib.command.Auto;
 import frc.team4201.lib.utils.TrajectoryUtils;
+import frc.robot.subsystems.Climber;
 
 import java.util.function.BooleanSupplier;
 
@@ -24,6 +27,7 @@ public class PreloadNeutralShootClimb extends Auto {
       CommandSwerveDrivetrain swerveDrive,
       IntakeShooter intake,
       Vision vision,
+      Climber climber,
       BooleanSupplier flipPath) {
     try {
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
@@ -52,8 +56,9 @@ public class PreloadNeutralShootClimb extends Auto {
               .andThen(() -> swerveDrive.setControl(stopRequest)),
           new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.SHOOT, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_OUTAKE).withTimeout(3),
           getChoiceCommand(trajectoryUtils, m_path5Outpost, m_path5Depot, flipPath).andThen(() -> swerveDrive.setControl(stopRequest)),
-          getPathCommand(trajectoryUtils, m_path6, flipPath).andThen(() -> swerveDrive.setControl(stopRequest))
-          //Todo: add climb (command not yet implemented in this branch)
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(3),
+          getPathCommand(trajectoryUtils, m_path6, flipPath).andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(3)
       );
     } catch (Exception e) {
       DriverStation.reportError(

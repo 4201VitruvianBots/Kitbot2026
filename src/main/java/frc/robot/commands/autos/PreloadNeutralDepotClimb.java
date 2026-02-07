@@ -15,10 +15,13 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeShooter;
 import frc.robot.subsystems.Vision;
 import frc.team4201.lib.command.Auto;
+import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
+import frc.robot.subsystems.Climber;
+import frc.robot.commands.SetClimbSpeed;
 
 public class PreloadNeutralDepotClimb extends Auto {
   public PreloadNeutralDepotClimb(
-          CommandSwerveDrivetrain swerveDrive, IntakeShooter intake, Vision vision) {
+          CommandSwerveDrivetrain swerveDrive, IntakeShooter intake, Vision vision, Climber climber) {
     try {
       var stopRequest = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -44,7 +47,9 @@ public class PreloadNeutralDepotClimb extends Auto {
           new ParallelRaceGroup(
               new SetIntakeShooterSpeeds(intake, INTAKESHOOTER.INTAKE_SPEED_PERCENT.INTAKE, INTAKESHOOTER.INTAKE_SPEED_PERCENT.KICKER_INTAKE),
               m_path6.andThen(() -> swerveDrive.setControl(stopRequest))),
-          m_path7.andThen(() -> swerveDrive.setControl(stopRequest))
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.UP).withTimeout(3),
+          m_path7.andThen(() -> swerveDrive.setControl(stopRequest)),
+          new SetClimbSpeed(climber, CLIMB_SPEED_PERCENT.DOWN).withTimeout(3)
           // Todo: add climb (command not yet implemented in this branch)
           );
     } catch (Exception e) {
