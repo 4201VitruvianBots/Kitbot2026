@@ -28,7 +28,7 @@ public class ResetGyro extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
       m_swerveDrive.resetGyro(0);
     } else {
       m_swerveDrive.resetGyro(180);

@@ -8,10 +8,10 @@ import frc.robot.commands.AutoAlignDrive;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.SetClimbSpeed;
 import frc.robot.commands.SetIntakeShooterSpeeds;
-import frc.robot.commands.autos.EightPieceMiddle;
-import frc.robot.commands.autos.EightPieceSide;
-import frc.robot.commands.autos.TrenchSide;
-import frc.robot.commands.autos.DepotLeft;
+import frc.robot.commands.autos.PreloadDepotShootMiddle;
+import frc.robot.commands.autos.PreloadNeutralDepotClimb;
+import frc.robot.commands.autos.PreloadNeutralShootClimb;
+import frc.robot.commands.autos.PreloadNeutralShootTwice;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
 import frc.robot.constants.USB;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
@@ -171,10 +171,10 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", m_autoChooser);
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
 
-    m_autoChooser.addOption("EightPieceMiddle", new EightPieceMiddle(m_swerveDrive, m_intakeShooter, m_climber));
-    m_autoChooser.addOption("EightPieceSide", new EightPieceSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
-    m_autoChooser.addOption("TrenchSide", new TrenchSide(m_swerveDrive, m_intakeShooter, m_climber, () -> m_flipToRight));
-    m_autoChooser.addOption("DepotLeft", new DepotLeft(m_swerveDrive, m_intakeShooter));
+    m_autoChooser.addOption("PreloadDepotShootMiddle", new PreloadDepotShootMiddle(m_swerveDrive, m_intakeShooter, m_vision));
+    m_autoChooser.addOption("PreloadNeutralShootClimb", new PreloadNeutralShootClimb(m_swerveDrive, m_intakeShooter, m_vision, ()->m_flipToRight));
+    m_autoChooser.addOption("PreloadNeutralDepotClimb", new PreloadNeutralDepotClimb(m_swerveDrive, m_intakeShooter, m_vision));
+    m_autoChooser.addOption("PreloadNeutralShootTwice", new PreloadNeutralShootTwice(m_swerveDrive, m_intakeShooter, m_vision, ()->m_flipToRight));
   }
 
   private void initSideChooser() {

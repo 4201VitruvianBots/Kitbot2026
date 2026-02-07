@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "EightPieceMiddlePath1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "EightPieceMiddlePath2"
+            "pathName": "PreloadCenter1"
           }
         }
       ]

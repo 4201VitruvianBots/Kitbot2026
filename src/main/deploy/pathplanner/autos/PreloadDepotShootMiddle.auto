@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchSidePath1"
+            "pathName": "PreloadDepotShootMiddle1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchSidePath2"
+            "pathName": "PreloadDepotShootMiddle2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchSidePath3"
+            "pathName": "PreloadDepotShootMiddle3"
           }
         }
       ]
