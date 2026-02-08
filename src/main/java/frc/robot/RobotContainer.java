@@ -13,9 +13,11 @@ import frc.robot.commands.autos.PreloadNeutralDepotClimb;
 import frc.robot.commands.autos.PreloadNeutralShootClimb;
 import frc.robot.commands.autos.PreloadNeutralShootTwice;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
+import frc.robot.constants.ROBOT;
+import frc.robot.constants.ROBOT.ROBOT_ID;
 import frc.robot.constants.USB;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
-import frc.robot.generated.TunerConstants;
+import frc.robot.generated.KitbotConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Controls;
@@ -95,18 +97,8 @@ public class RobotContainer {
     
     SmartDashboard.putData(new ResetGyro(m_swerveDrive));
   }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+  
   private void configureBindings() {
-    
     //intake
     m_driverController.leftTrigger().whileTrue(
       new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE));
@@ -126,6 +118,10 @@ public class RobotContainer {
     //TODO: rebind to right bumper
     // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  
+  }
+  
+  private void configureAlphaBotBindings() {
+    
   }
 
   /**
