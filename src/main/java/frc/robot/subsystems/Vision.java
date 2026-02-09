@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.Logged.Importance;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,6 +12,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +28,7 @@ public class Vision extends SubsystemBase {
   private FieldSim m_fieldSim;
   private Translation2d m_goal = new Translation2d();
   // TODO: Re-add this
-//   private LimelightSim visionSim;
+  //   private LimelightSim visionSim;
   private Controls m_controls;
 
   private boolean m_localized;
@@ -61,6 +63,13 @@ public class Vision extends SubsystemBase {
 
   public void registerSwerveDrive(CommandSwerveDrivetrain swerveDriveTrain) {
     m_swerveDriveTrain = swerveDriveTrain;
+  }
+
+  @Logged(name = "Distance to Hub", importance = Importance.INFO)
+  public Distance getDistancetoHub() {
+    final Distance distanceToHub =
+        Meters.of(m_swerveDriveTrain.getState().Pose.getTranslation().getDistance(m_goal));
+    return distanceToHub;
   }
 
   public void registerFieldSim(FieldSim fieldSim) {
@@ -178,7 +187,7 @@ public class Vision extends SubsystemBase {
       if (!limelightMeasurement.isMegaTag2) {
         // Filter out bad AprilTag vision estimates for MegaTag1
         // TODO: Check 1 tag from center?
-        if (limelightMeasurement.tagCount < 1) {
+        if (limelightMeasurement.tagCount < 2) {
           return false;
         }
 
