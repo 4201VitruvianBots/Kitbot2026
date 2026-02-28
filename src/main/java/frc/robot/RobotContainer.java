@@ -13,8 +13,6 @@ import frc.robot.commands.autos.EightPieceSide;
 import frc.robot.commands.autos.TrenchSide;
 import frc.robot.commands.autos.DepotLeft;
 import frc.robot.constants.INTAKESHOOTER.INTAKE_SPEED_PERCENT;
-import frc.robot.constants.ROBOT;
-import frc.robot.constants.ROBOT.ROBOT_ID;
 import frc.robot.constants.USB;
 import frc.robot.constants.CLIMBER.CLIMB_SPEED_PERCENT;
 import frc.robot.generated.KitbotConstants;
@@ -29,20 +27,14 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.time.temporal.TemporalAdjuster;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team4201.lib.utils.Telemetry;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -52,7 +44,7 @@ import frc.team4201.lib.utils.Telemetry;
 //  */
 // @Logged(name = "Robot Container", importance = Logged.Importance.CRITICAL)
 public class RobotContainer {
-  private CommandSwerveDrivetrain m_swerveDrive = TunerConstants.createDrivetrain();
+  private CommandSwerveDrivetrain m_swerveDrive = KitbotConstants.createDrivetrain();
 
   // @Logged(name = "Intake/Shooter", importance = Logged.Importance.INFO)
   private IntakeShooter m_intakeShooter = new IntakeShooter();
@@ -72,7 +64,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
   private Boolean m_flipToRight = false;
 
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -119,10 +111,6 @@ public class RobotContainer {
     //TODO: rebind to right bumper
     // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  
-  }
-  
-  private void configureAlphaBotBindings() {
-    
   }
 
   /**
