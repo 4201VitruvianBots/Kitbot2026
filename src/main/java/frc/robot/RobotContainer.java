@@ -34,8 +34,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team4201.lib.utils.Telemetry;
+//ps5 controler?
+import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.GenericHID;
+ 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -61,10 +66,10 @@ public class RobotContainer {
   private final FieldSim m_fieldSim = new FieldSim();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(USB.driver_xBoxController);
+  private final CommandPS5Controller m_driverController =
+      new CommandPS5Controller(USB.driver_PS5Controller);
       
-  private double MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 1.50; // kSpedAt12Volts desired top speed
   private Boolean m_flipToRight = false;
 
   private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -93,11 +98,11 @@ public class RobotContainer {
   
   private void configureBindings() {
     //intake
-    m_driverController.leftTrigger().whileTrue(
+    m_driverController.L2().whileTrue(
       new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.INTAKE, INTAKE_SPEED_PERCENT.KICKER_INTAKE));
 
     //shoot
-    m_driverController.rightTrigger().whileTrue(
+    m_driverController.R2().whileTrue(
       new SetIntakeShooterSpeeds(m_intakeShooter, INTAKE_SPEED_PERCENT.SHOOT, INTAKE_SPEED_PERCENT.KICKER_OUTAKE));
 
     //climb up
@@ -107,7 +112,7 @@ public class RobotContainer {
     m_driverController.povDown().whileTrue(new SetClimbSpeed(m_climber, CLIMB_SPEED_PERCENT.DOWN));
 
     //auto align
-    m_driverController.a().whileTrue(new AutoAlignDrive(m_swerveDrive, () -> m_driverController.getLeftY(), () -> m_driverController.getLeftX()));
+    m_driverController.cross().whileTrue(new AutoAlignDrive(m_swerveDrive, () -> m_driverController.getLeftY(), () -> m_driverController.getLeftX()));
     //TODO: rebind to right bumper
     // m_driverController.rightBumper().whileTrue(new AutoAlignDrive(m_swerveDrive, m_vision, () -> m_driverController.getLeftY(), () -> m_driverController.getRightX()));
  
