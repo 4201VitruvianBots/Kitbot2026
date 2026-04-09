@@ -64,10 +64,10 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(USB.driver_xBoxController);
       
-  private double MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond) / 2.42; // kSpedAt12Volts desired top speed
+  private double MaxSpeed = KitbotConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private Boolean m_flipToRight = false;
 
-  private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private final double MaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); // 1.5 rotations per second max angular velocity
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<Boolean> m_autoSide = new SendableChooser<>();
@@ -76,7 +76,7 @@ public class RobotContainer {
   
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.3)
+          .withDeadband(MaxSpeed * 0.1)
           .withRotationalDeadband(MaxAngularRate * 0.1); // Add a 10% deadband
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
